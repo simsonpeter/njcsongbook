@@ -152,6 +152,7 @@
         <h1>Church Songbook</h1>
         <p>A Collection of Worship Songs and Hymns</p>
     </header>
+   <div id="songbook"></div>
 
     <div class="container">
         <div class="filters">
@@ -174,33 +175,30 @@
     </div>
 
     <script>
-        // Sample Songs Data
-        const songs = [
-            {
-                id: 1,
-                title: "Amazing Grace",
-                author: "John Newton",
-                category: "hymn",
-                lyrics: `
-                    [C]Amazing grace! How sweet the sound
-                    [G]That saved a wretch like me!
-                    [F]I once was lost, but now am found;
-                    [C]Was blind, but now I see.
-                `
-            },
-            {
-                id: 2,
-                title: "How Great Thou Art",
-                author: "Carl Boberg",
-                category: "hymn",
-                lyrics: `
-                    [G]O Lord my God, when I in awesome wonder
-                    [C]Consider all the worlds Thy hands have made
-                    [D]I see the stars, I hear the rolling thunder
-                    [G]Thy power throughout the universe displayed
-                `
-            }
-        ];
+       
+        // Load song data from external file
+        fetch('songs.json')
+            .then(response => response.json())
+            .then(songs => {
+                const container = document.getElementById('songbook');
+                
+                songs.forEach(song => {
+                    const songDiv = document.createElement('div');
+                    songDiv.className = 'song';
+                    songDiv.innerHTML = `
+                        <h2>${song.title}</h2>
+                        <p class="author">${song.author}</p>
+                        <div class="lyrics">${formatLyrics(song.lyrics)}</div>
+                    `;
+                    container.appendChild(songDiv);
+                });
+            });
+
+        function formatLyrics(lyrics) {
+            return lyrics.replace(/\[(.*?)\]/g, '<span class="chord">$1</span>')
+                        .replace(/\n/g, '<br>');
+        }
+   
 
         // Initialize App
         function init() {
